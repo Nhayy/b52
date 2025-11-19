@@ -17,9 +17,13 @@ let latestResult = {
   Ket_qua: "",
 };
 
+let history = [];
+
 function updateResult(d1, d2, d3, sid = null) {
   const total = d1 + d2 + d3;
   const result = total > 10 ? "Tài" : "Xỉu";
+  const timeStr = new Date().toISOString().replace("T", " ").slice(0, 19);
+
   latestResult = {
     Phien: sid || latestResult.Phien,
     Xuc_xac_1: d1,
@@ -27,10 +31,16 @@ function updateResult(d1, d2, d3, sid = null) {
     Xuc_xac_3: d3,
     Tong: total,
     Ket_qua: result,
-   id: "@mrtinhios"
+    id: "@mrtinhios",
+    Thoi_gian: timeStr
   };
 
-  const timeStr = new Date().toISOString().replace("T", " ").slice(0, 19);
+  history.unshift({...latestResult});
+
+  if (history.length > 100) {
+    history = history.slice(0, 100);
+  }
+
   console.log(
     `[🎲✅] Phiên ${latestResult.Phien} - ${d1}-${d2}-${d3} ➜ Tổng: ${total}, Kết quả: ${result} | ${timeStr}`
   );
@@ -65,8 +75,15 @@ app.get("/api/ditmemayb52", (req, res) => {
   res.json(latestResult);
 });
 
+app.get("/api/history", (req, res) => {
+  res.json({
+    total: history.length,
+    data: history
+  });
+});
+
 app.get("/", (req, res) => {
-  res.json({ status: "B52 Tài Xỉu đang chạy", phien: latestResult.Phien });
+  res.json({ status: "B52 Tài Xỉu đang chạy", phien: latestResult.Phien, total_history: history.length });
 });
 
 setInterval(() => {
