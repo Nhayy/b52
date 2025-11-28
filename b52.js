@@ -31,7 +31,7 @@ function updateResult(d1, d2, d3, sid = null) {
     Xuc_xac_3: d3,
     Tong: total,
     Ket_qua: result,
-    id: "@mrtinhios",
+    id: "@mryanhdz",
     Thoi_gian: timeStr
   };
 
